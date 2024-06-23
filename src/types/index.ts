@@ -155,8 +155,12 @@ export class Product implements IProductAPI {
         
         const deleteButton = item.querySelector('.basket__item-delete') as HTMLButtonElement;
         deleteButton.onclick = () => {
-          basket.removeProduct(this.data)
-          //basket.createBasket()
+            basket.removeProduct(this.data)
+            deleteButton.closest('.card').remove()
+            this.data.basket = 'out'
+            basket.createBasket()
+            document.querySelector('.basket__list').querySelectorAll('.basket__item-index').forEach((item, index) => item.textContent = `${index+1}`);
+            document.querySelector('.basket__price').textContent = `${basket.totalPrice()} синапсов`
         };
     
         return item;
@@ -211,9 +215,6 @@ export class Basket {
         let total = this.products.reduce((sum, product) => sum + product.price, 0)
         return total
     }
-    public totalCounter(): number {
-        return this.products.length
-    }
 }
 export class PrintBasket extends Basket {
     constructor() {
@@ -231,6 +232,7 @@ export class PrintBasket extends Basket {
             cart.querySelector('.basket__list').append(product.createShort())
         })
         cart.querySelectorAll('.basket__item-index').forEach((item, index) => item.textContent = `${index+1}`)
+        cart.querySelector('.basket__price').textContent = `${this.totalPrice()} синапсов`
 
         return cart
     }
