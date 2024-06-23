@@ -4,24 +4,6 @@ import * as Сonstants from '../utils/constants';
 import * as Utils from '../utils/utils';
 function p(some: any) {console.log(some)}
 
-export interface IProductData {
-    id: string;
-    title: string;
-    description: string;
-    category: string;
-    price: number;
-    image: string;
-    basket: 'in' | 'out';
-  }
-export interface IProductList {
-    total: number;
-    items: IProductData[];
-}
-export interface IProductAPI {
-    createShort(): HTMLElement
-    createCard(templateName: string): HTMLElement;
-    createModal(): HTMLElement
-}
 export interface IUserData {
     id: string;
     username: string;
@@ -51,6 +33,29 @@ export interface ICartAPI {
     toggleItemInCart(product: IProductData): void;
   }
   
+  export interface IProductList {
+    total: number;
+    items: IProductData[];
+}
+export class ProductList {
+    private total: number;
+    private items: IProductData[];
+  
+    constructor(data: IProductList) {
+      this.items = data.items;
+      this.total = data.total;
+    }
+
+    public createGallery(where: string) {
+        const gallery = document.querySelector(where)
+
+        this.items.forEach(item => {
+            const product = new Product(item)
+            gallery.append(product.createCard())
+        })
+    }
+}
+
 
 export interface IModal {
     getExternal(): HTMLElement;
@@ -106,37 +111,59 @@ export class Modal implements IModal {
     public getContent(): HTMLElement {return this.content;}
 }
 
+export interface IProductData {
+    id: string;
+    title: string;
+    description: string;
+    category: string;
+    price: number;
+    image: string;
+    basket: 'in' | 'out';
+  }
 
+export interface IProductAPI {
+    createShort(): HTMLElement
+    createCard(templateName: string): HTMLElement;
+    createModal(): HTMLElement
+}
 export class Product implements IProductAPI {
     private data: IProductData;
   
     constructor(data: IProductData) {
       this.data = data;
-      this.data.basket = "out"
+    }
+
+    public pushInfo(selector: string) {
+        const product = Utils.cloneTemplate<HTMLLIElement>(selector);
+
+        if (product.querySelector('.card__title')) 
+            product.querySelector('.card__title').textContent = this.data.title;
+        if (product.querySelector('.card__category')) 
+            product.querySelector('.card__category').textContent = this.data.category;
+        if (product.querySelector('.card__image')) 
+            (product.querySelector('.card__image') as HTMLImageElement).src = `${Сonstants.CDN_URL}${this.data.image}`;
+        if (product.querySelector('.card__price')) 
+            product.querySelector('.card__price').textContent = `${this.data.price ?? 0} синапсов`;
+        if (product.querySelector('.card__text')) 
+            product.querySelector('.card__text').textContent = this.data.description;
+
+        return product
     }
 
     public createShort(): HTMLElement {
-        const item = Utils.cloneTemplate<HTMLLIElement>('#card-basket');
-
-        item.querySelector('.card__title').textContent = this.data.title;
-        item.querySelector('.card__price').textContent = `${this.data.price ?? 0} синапсов`;
-    
-        // Добавляем обработчик клика для кнопки удаления из корзины
+        const item = this.pushInfo('#card-basket');
+        
         const deleteButton = item.querySelector('.basket__item-delete') as HTMLButtonElement;
         deleteButton.onclick = () => {
-          // Здесь должна быть логика для удаления товара из корзины
+          basket.removeProduct(this.data)
+          //basket.createBasket()
         };
     
         return item;
     }
   
     public createCard(): HTMLElement {
-      const card = Utils.cloneTemplate<HTMLDivElement>('#card-catalog');
-
-      card.querySelector('.card__title').textContent = this.data.title;
-      card.querySelector('.card__category').textContent = this.data.category;
-      (card.querySelector('.card__image') as HTMLImageElement).src = `${Сonstants.CDN_URL}${this.data.image}`;
-      card.querySelector('.card__price').textContent = `${this.data.price ?? 0} синапсов`;
+      const card = this.pushInfo('#card-catalog')
 
       card.addEventListener('click', () => {
         const modal = new Modal(this.createModal());
@@ -147,68 +174,69 @@ export class Product implements IProductAPI {
     }
       
     public createModal(): HTMLElement {
-        const card = Utils.cloneTemplate<HTMLDivElement>('#card-preview');
-
-        card.querySelector('.card__title').textContent = this.data.title;
-        card.querySelector('.card__category').textContent = this.data.category;
-        (card.querySelector('.card__image') as HTMLImageElement).src = `${Сonstants.CDN_URL}${this.data.image}`;
-        card.querySelector('.card__price').textContent = `${this.data.price ?? 0} синапсов`;
-        card.querySelector('.card__text').textContent = this.data.description;
+        const card = this.pushInfo('#card-preview')
     
         const basketButton = card.querySelector('.card__button') as HTMLButtonElement;
         basketButton.textContent = this.data.basket === 'in' ? 'Убрать из корзины' : 'В корзину';
         basketButton.onclick = () => {
             this.data.basket = this.data.basket === 'in' ? 'out' : 'in';
             basketButton.textContent = this.data.basket === 'in' ? 'Убрать из корзины' : 'В корзину';
-
-            // Здесь должна быть логика для добавления или удаления товара из корзины
+            if (this.data.basket === 'in') {basket.addProduct(this.data);} 
+            else {basket.removeProduct(this.data);}
         };
     
         return card;
     }
 }
-    
-export class ProductList implements IProductList {
-    total: number;
-    items: IProductData[];
-  
-    constructor(data: IProductList) {
-      this.items = data.items;
-      this.total = data.total;
-    }
-
-    public createGallery(where: string) {
-        const gallery = document.querySelector(where)
-
-        this.items.forEach(item => {
-            const product = new Product(item)
-            gallery.append(product.createCard())
-        })
-    }
-}
 
 export class Basket {
-    products: IProductData[];
+    protected products: IProductData[];
+    protected counter: number;
 
     constructor () {
         this.products = [];
+        this.counter = 0
     }
-
     public addProduct(product: IProductData) {
         this.products.push(product)
+        this.counter = this.counter+1
+        document.querySelector('.header__basket-counter').textContent = `${this.counter}`
     }
-
     public removeProduct(product: IProductData) {
-        this.products.filter(item => item !== product)
+        this.products = this.products.filter(item => item.id !== product.id)
+        this.counter = this.counter-1
+        document.querySelector('.header__basket-counter').textContent = `${this.counter}`
     }
-
     public totalPrice(): number {
         let total = this.products.reduce((sum, product) => sum + product.price, 0)
         return total
     }
-
     public totalCounter(): number {
         return this.products.length
     }
 }
+export class PrintBasket extends Basket {
+    constructor() {
+        super()
+        document.querySelector('.header__basket').addEventListener('click', () => {
+            const popup = new Modal(this.createBasket())
+            popup.activationModal()
+        })
+    }
+
+    public createBasket(): HTMLElement {
+        const cart = Utils.cloneTemplate<HTMLLIElement>('#basket');
+        this.products.forEach(item => {
+            const product = new Product(item)
+            cart.querySelector('.basket__list').append(product.createShort())
+        })
+        cart.querySelectorAll('.basket__item-index').forEach((item, index) => item.textContent = `${index+1}`)
+
+        return cart
+    }
+
+}
   
+
+
+const basket = new PrintBasket()

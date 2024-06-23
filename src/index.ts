@@ -15,3 +15,4 @@ api.get(`/product/`).then(data => {
     const productList = new Types.ProductList(data as Types.IProductList) 
     productList.createGallery('.gallery')
 })
+
