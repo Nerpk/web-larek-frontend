@@ -1,12 +1,10 @@
 import { IProductData, IProductModel } from "../../types";
-import * as Сonstants from '../../utils/constants';
 
 export class ProductModel implements IProductModel {
     protected data: IProductData;
   
     constructor(data: IProductData) {
       this.data = data;
-      this.data.image = `${Сonstants.CDN_URL}${data.image}`;
     }
 
     public getData(): IProductData {

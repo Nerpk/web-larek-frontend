@@ -2,6 +2,7 @@ import { ProductModel } from '../model/product';
 import { ProductView } from '../view/product';
 import { IProductData } from '../../types';
 import * as Events from '../base/events';
+import * as Сonstants from '../../utils/constants';
 
 export class ProductController {
     private model: ProductModel;
@@ -55,7 +56,7 @@ export class ProductController {
         if (this.view.getCardCategory()) 
             this.view.getCardCategory().textContent = this.model.getCategory();
         if (this.view.getCardImage()) 
-            this.view.getCardImage().src = this.model.getImageUrl();
+            this.view.getCardImage().src = `${Сonstants.CDN_URL}${this.model.getImageUrl()}`;
         if (this.view.getCardPrice()) 
             this.view.getCardPrice().textContent = this.model.getPrice();
         if (this.view.getCardDescription()) 
