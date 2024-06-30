@@ -12,22 +12,22 @@ export class ProductController {
       this.model = new ProductModel(data);
     }
   
-    public createCard(eve: Events.EventEmitter): HTMLElement {
+    public createCard(event: Events.EventEmitter): HTMLElement {
         this.view = new ProductView('#card-catalog');
         this.modelToView();
         this.view.getCardTemplate().addEventListener('click', () => {
-            eve.emit('activationModal', this.createModal(eve))
+            event.emit('activationModal', this.createModal(event))
         })
         return this.view.getCardTemplate();
     }
 
-    public createShort(eve: Events.EventEmitter): HTMLElement {
+    public createShort(event: Events.EventEmitter): HTMLElement {
         this.view = new ProductView('#card-basket');
         this.modelToView();
 
         this.view.getCardButton().addEventListener('click', () => {
-            eve.emit('removeProduct', this.model.getData())
-            eve.emit('changeData')
+            event.emit('removeProduct', this.model.getData())
+            event.emit('changeData')
             this.view.getCardButton().closest('.card').remove()
             this.model.setBasketStatus('out');
         })
@@ -35,7 +35,7 @@ export class ProductController {
         return this.view.getCardTemplate();
     }
 
-    public createModal(eve: Events.EventEmitter): HTMLElement {
+    public createModal(event: Events.EventEmitter): HTMLElement {
         this.view = new ProductView('#card-preview');
         this.modelToView();
 
@@ -43,8 +43,8 @@ export class ProductController {
         this.view.getCardButton().addEventListener('click', () => {
             this.model.setBasketStatus(this.model.getBasketStatus() === 'in' ? 'out' : 'in');
             this.view.getCardButton().textContent = this.model.getBasketStatus() === 'in' ? 'Убрать из корзины' : 'В корзину';
-            if (this.model.getBasketStatus() === 'in') {eve.emit('addProduct', this.model.getData())} 
-            else {eve.emit('removeProduct', this.model.getData())}
+            if (this.model.getBasketStatus() === 'in') {event.emit('addProduct', this.model.getData())} 
+            else {event.emit('removeProduct', this.model.getData())}
         })
 
         return this.view.getCardTemplate();

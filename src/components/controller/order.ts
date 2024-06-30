@@ -6,18 +6,18 @@ export class OrderController {
     private model: OrderModel;
     private view: OrderView;
 
-    constructor(eve: Events.EventEmitter) {
+    constructor(event: Events.EventEmitter) {
         this.model = new OrderModel;
         this.view = new OrderView;
 
-        eve.on('createOrder', (e) => {
+        event.on('createOrder', (e) => {
             this.model.getData().total = (e as {total: number, ids: string[]}).total;
             this.model.getData().items = (e as {total: number, ids: string[]}).ids;
-            eve.emit('activationModal', this.createOrder(eve))
+            event.emit('activationModal', this.createOrder(event))
         })
     }
 
-    public createOrder(eve: Events.EventEmitter): HTMLElement {
+    public createOrder(event: Events.EventEmitter): HTMLElement {
         const flag: {b: boolean; i: boolean;} = {b: false, i: false};
         this.view.chooseButtonsElement.forEach((button) => {
             button.addEventListener('click', () => {
@@ -38,14 +38,14 @@ export class OrderController {
 
         this.view.nextButtonElement.addEventListener('click', () => {
             this.model.address = this.view.adressInputElement.value
-            eve.emit('disActivationModal');
-            eve.emit('activationModal', this.createContacts(eve))
+            event.emit('disActivationModal');
+            event.emit('activationModal', this.createContacts(event))
         })
 
         return this.view.orderTemplateElement
     }
     
-    public createContacts(eve: Events.EventEmitter): HTMLElement {
+    public createContacts(event: Events.EventEmitter): HTMLElement {
         const flag: {[key: number]: boolean} = {0: false, 1: false};
         [this.view.emailInputElement, this.view.phoneInputElement].forEach((contact: HTMLFormElement, index: number) => {
             contact.addEventListener('input', () => {
@@ -55,14 +55,14 @@ export class OrderController {
             })
         })
 
-        this.view.payButtonElement.addEventListener('click', (event) => {
-            event.preventDefault()
+        this.view.payButtonElement.addEventListener('click', (e) => {
+            e.preventDefault()
             this.model.email = this.view.emailInputElement.value
             this.model.phone = this.view.phoneInputElement.value
 
-            eve.emit('ApiPOST', this.model.flattenObject(this.model.getData()))
-            eve.emit('disActivationModal');
-            eve.emit('openSuccess', {total: this.model.getData().total});
+            event.emit('ApiPOST', this.model.flattenObject(this.model.getData()))
+            event.emit('disActivationModal');
+            event.emit('openSuccess', {total: this.model.getData().total});
         })
 
         return this.view.contactsTemplateElement

@@ -4,6 +4,7 @@ export class ModalView implements IModalView{
     private external: HTMLElement;
     private internal: HTMLElement;
     private closeButton: HTMLElement;
+    private content: HTMLElement;
 
     constructor() {
         this.external = document.querySelector('#modal-container');
@@ -28,5 +29,13 @@ export class ModalView implements IModalView{
     }
     public getCloseButton(): HTMLElement {
         return this.closeButton;
+    }
+
+    public getContent(): HTMLElement {
+        return this.content;
+    } 
+
+    public setContent(content: HTMLElement) {
+        this.content = content;
     }
 }

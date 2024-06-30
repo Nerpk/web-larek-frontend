@@ -2,13 +2,13 @@ import * as Api from './api';
 import * as Events from './events';
 import * as Сonstants from '../../utils/constants';
 
-export class helpApi {
+export class HelpApi {
     protected api: Api.Api;
 
-    constructor (eve: Events.EventEmitter) {
+    constructor (event: Events.EventEmitter) {
         this.api = new Api.Api(Сonstants.API_URL);
 
-        eve.on('ApiPOST', (e) => {
+        event.on('ApiPOST', (e) => {
             this.api.post('/order', e)
         })
     }

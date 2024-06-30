@@ -1,18 +1,16 @@
-import { ModalModel } from '../model/modal';
 import { ModalView } from '../view/modal';
 import * as Events from '../base/events';
 
 export class ModalController {
-    private model: ModalModel;
     private view: ModalView;
 
-    constructor(eve: Events.EventEmitter) {
+    constructor(event: Events.EventEmitter) {
         this.view = new ModalView();
 
-        eve.on('activationModal', (e) => {
+        event.on('activationModal', (e) => {
             this.activationModal(e as HTMLElement);
         })
-        eve.on('disActivationModal', () => {
+        event.on('disActivationModal', () => {
             this.disActivationModal();
         })
 
@@ -22,12 +20,12 @@ export class ModalController {
     }
 
     public activationModal(content: HTMLElement) {
-        this.model = new ModalModel(content);
-        this.view.activationModal(this.model.getContent());
+        this.view.setContent(content);
+        this.view.activationModal(this.view.getContent());
     }
 
     public disActivationModal() {
-        this.view.disActivationModal(this.model.getContent());
+        this.view.disActivationModal(this.view.getContent());
     }
 
     private escapeCheck(event: KeyboardEvent) {
