@@ -10,8 +10,10 @@ export class HelpApi {
 
         event.on('ApiPOST', (e) => {
             this.api.post('/order', e).then(v => {
-                console.log(v)
-            })
+                console.log(v);
+            }).catch(err => {
+                console.error('Произошла ошибка при выполнении запроса:', err);
+            });
         })
     }
 

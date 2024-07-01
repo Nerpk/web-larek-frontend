@@ -26,6 +26,11 @@ export class BasketController {
         event.on('getBasket', () => {
             return this.model.getData()
         })
+        event.on('disActivationSuccess', () => {
+            this.model = new BasketModel;
+            this.view = new BasketView;
+            this.view.getMainBasketCounter().textContent = '0';
+        })
 
         this.view.getMainBasketButton().addEventListener('click', () => {
             event.emit('activationModal', this.createBasket(event))

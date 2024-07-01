@@ -15,6 +15,11 @@ export class OrderController {
             this.model.getData().items = (e as {total: number, products: string[]}).products;
             event.emit('activationModal', this.createOrder(event))
         })
+        event.on('disActivationSuccess', () => {
+            this.model = new OrderModel;
+            this.view = new OrderView;
+        })
+
     }
 
     public createOrder(event: Events.EventEmitter): HTMLElement {
@@ -62,7 +67,8 @@ export class OrderController {
 
             event.emit('ApiPOST', this.model.flattenObject(this.model.getData()))
             event.emit('disActivationModal');
-            event.emit('openSuccess', {total: this.model.getData().total});
+            event.emit('activationSuccess', {total: this.model.getData().total});
+            event.emit('disActivationSuccess')
         })
 
         return this.view.contactsTemplateElement

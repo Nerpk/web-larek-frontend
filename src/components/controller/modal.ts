@@ -1,11 +1,13 @@
 import { ModalView } from '../view/modal';
 import * as Events from '../base/events';
+import * as Utils from '../../utils/utils';
 
 export class ModalController {
     private view: ModalView;
 
     constructor(event: Events.EventEmitter) {
         this.view = new ModalView();
+        this.closeFunctional();
 
         event.on('activationModal', (e) => {
             this.activationModal(e as HTMLElement);
@@ -13,10 +15,14 @@ export class ModalController {
         event.on('disActivationModal', () => {
             this.disActivationModal();
         })
-
-        this.view.getCloseButton().addEventListener('click', () => this.disActivationModal());
-        document.addEventListener('keydown', (event) => this.escapeCheck(event));
-        this.view.getExternal().addEventListener('click', (evt) => this.closePopupByOverlay(evt));
+        event.on('activationSuccess', (e) => {
+            const success = Utils.cloneTemplate<HTMLLIElement>('#success');
+            success.querySelector('.order-success__description').textContent = `Списано ${(e as {total: number}).total} синапсов`
+            success.querySelector('.order-success__close').addEventListener('click', () => {
+                event.emit('disActivationModal')
+            })
+            this.activationModal(success);
+        })
     }
 
     public activationModal(content: HTMLElement) {
@@ -38,5 +44,16 @@ export class ModalController {
         if (evt.target === this.view.getExternal()) {
             this.disActivationModal();
         }
+    }
+    private closeFunctional() {
+        this.view.getCloseButton().addEventListener('click', () => {
+            this.disActivationModal()
+        });
+        document.addEventListener('keydown', (event) => {
+            this.escapeCheck(event)
+        });
+        this.view.getExternal().addEventListener('click', (evt) => {
+            this.closePopupByOverlay(evt)
+        });
     }
 }

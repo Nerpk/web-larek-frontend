@@ -8,8 +8,13 @@ export class ProductController {
     private model: ProductModel;
     private view: ProductView;
   
-    constructor(data: IProductData) {
+    constructor(data: IProductData, event: Events.EventEmitter) {
       this.model = new ProductModel(data);
+
+      event.on('disActivationSuccess', () => {
+        this.model = new ProductModel(data);
+        this.model.setBasketStatus('out');
+    })
     }
   
     public createCard(event: Events.EventEmitter): HTMLElement {
@@ -39,13 +44,15 @@ export class ProductController {
         this.view = new ProductView('#card-preview');
         this.modelToView();
 
-        this.view.getCardButton().textContent = this.model.getBasketStatus() === 'in' ? 'Убрать из корзины' : 'В корзину';
-        this.view.getCardButton().addEventListener('click', () => {
+        if (this.model.getTitle() != 'Мамка-таймер') {
+            this.view.getCardButton().textContent = this.model.getBasketStatus() === 'in' ? 'Убрать из корзины' : 'В корзину';
+            this.view.getCardButton().addEventListener('click', () => {
             this.model.setBasketStatus(this.model.getBasketStatus() === 'in' ? 'out' : 'in');
             this.view.getCardButton().textContent = this.model.getBasketStatus() === 'in' ? 'Убрать из корзины' : 'В корзину';
             if (this.model.getBasketStatus() === 'in') {event.emit('addProduct', this.model.getData())} 
             else {event.emit('removeProduct', this.model.getData())}
-        })
+        })}
+        else {this.view.getCardButton().disabled = true}
 
         return this.view.getCardTemplate();
     }
