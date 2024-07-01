@@ -9,11 +9,13 @@ export class HelpApi {
         this.api = new Api.Api(Сonstants.API_URL);
 
         event.on('ApiPOST', (e) => {
-            this.api.post('/order', e)
+            this.api.post('/order', e).then(v => {
+                console.log(v)
+            })
         })
     }
 
     public get(uri: string) {
-        return this.api.get(uri)
+       return this.api.get(uri)
     }
 }

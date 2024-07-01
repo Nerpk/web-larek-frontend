@@ -11,8 +11,8 @@ export class OrderController {
         this.view = new OrderView;
 
         event.on('createOrder', (e) => {
-            this.model.getData().total = (e as {total: number, ids: string[]}).total;
-            this.model.getData().items = (e as {total: number, ids: string[]}).ids;
+            this.model.getData().total = (e as {total: number, products: string[]}).total;
+            this.model.getData().items = (e as {total: number, products: string[]}).products;
             event.emit('activationModal', this.createOrder(event))
         })
     }

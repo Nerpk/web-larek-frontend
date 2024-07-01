@@ -5,6 +5,7 @@ export class ProductView implements IProductView{
     private cardTemplate: HTMLElement;
     private cardTitle: HTMLElement;
     private cardCategory: HTMLElement;
+    private cardCategoryColor: string;
     private cardImage: HTMLImageElement;
     private cardPrice: HTMLElement;
     private cardDescription: HTMLElement;
@@ -53,5 +54,22 @@ export class ProductView implements IProductView{
 
     public getCardButton(): HTMLButtonElement {
         return this.cardButton;
+    }
+
+    public getCategoryColor(): string {
+        return this.cardCategoryColor;
+    } 
+
+    public setCategoryColor(text: string) {
+        if (text === 'софт-скил')
+            this.cardCategoryColor = 'card__category_soft'
+        if (text === 'хард-скил')
+            this.cardCategoryColor = 'card__category_hard'
+        if (text === 'другое')
+            this.cardCategoryColor = 'card__category_other'
+        if (text === 'дополнительное')
+            this.cardCategoryColor = 'card__category_additional'
+        if (text === 'кнопка')
+            this.cardCategoryColor = 'card__category_button'
     }
 }

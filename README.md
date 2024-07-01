@@ -144,7 +144,7 @@ class ModalView implements IModalView {
 }
 
 // Отображение заказа
-export class OrderView implements IOrderView {
+class OrderView implements IOrderView {
     protected orderTemplate: HTMLElement;    // шаблон окна заказа
     protected contactsTemplate: HTMLElement;  // шаблон окна с контактами
     protected chooseButtons: HTMLButtonElement[]; // массив кнопок для выбора способа оплаты
@@ -168,7 +168,7 @@ export class OrderView implements IOrderView {
 }
 
 // Отображение продукта
-export class ProductView implements IProductView{
+class ProductView implements IProductView{
     private cardTemplate: HTMLElement; //шаблон продукта из разметки
     private cardTitle: HTMLElement; //заголовок
     private cardCategory: HTMLElement; //категория
@@ -183,7 +183,10 @@ export class ProductView implements IProductView{
     public getCardImage(): HTMLImageElement 
     public getCardPrice(): HTMLElement 
     public getCardDescription(): HTMLElement 
-    public getCardButton(): HTMLButtonElement    //возвращают соответствующие поля
+    public getCardButton(): HTMLButtonElement    
+    public getCategoryColor(): string                //возвращают соответствующие поля
+
+    public setCategoryColor(text: string)  // в зависимотсти от текста категории ставит соответствующий класс в поле 
 }
 
 

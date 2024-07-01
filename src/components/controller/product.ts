@@ -53,8 +53,13 @@ export class ProductController {
     public modelToView() {
         if (this.view.getCardTitle()) 
             this.view.getCardTitle().textContent = this.model.getTitle();
-        if (this.view.getCardCategory()) 
+        if (this.view.getCardCategory()) {
             this.view.getCardCategory().textContent = this.model.getCategory();
+            this.view.setCategoryColor(this.model.getCategory());
+            this.view.getCardCategory().classList.remove('card__category_other');
+            this.view.getCardCategory().classList.remove('crad__category_soft');
+            this.view.getCardCategory().classList.add(this.view.getCategoryColor());
+        }
         if (this.view.getCardImage()) 
             this.view.getCardImage().src = `${Сonstants.CDN_URL}${this.model.getImageUrl()}`;
         if (this.view.getCardPrice()) 
