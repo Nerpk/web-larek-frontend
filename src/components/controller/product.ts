@@ -31,10 +31,10 @@ export class ProductController {
         this.modelToView();
 
         this.view.getCardButton().addEventListener('click', () => {
-            event.emit('removeProduct', this.model.getData())
-            event.emit('changeData')
             this.view.getCardButton().closest('.card').remove()
             this.model.setBasketStatus('out');
+            event.emit('removeProduct', this.model.getData())
+            event.emit('changeData')
         })
 
         return this.view.getCardTemplate();

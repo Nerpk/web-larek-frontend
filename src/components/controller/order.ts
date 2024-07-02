@@ -18,11 +18,29 @@ export class OrderController {
         event.on('disActivationSuccess', () => {
             this.model = new OrderModel;
             this.view = new OrderView;
+            this.view.nextButtonElement.addEventListener('click', () => {
+                event.emit('disActivationModal');
+                event.emit('activationModal', this.createContacts(event))
+            })
+            this.view.payButtonElement.addEventListener('click', (e) => {
+                e.preventDefault()
+                event.emit('ApiPOST', this.model.flattenObject(this.model.getData()))
+            })
+        })
+
+        this.view.nextButtonElement.addEventListener('click', () => {
+            event.emit('disActivationModal');
+            event.emit('activationModal', this.createContacts(event))
+        })
+        this.view.payButtonElement.addEventListener('click', (e) => {
+            e.preventDefault()
+            event.emit('ApiPOST', this.model.flattenObject(this.model.getData()))
         })
 
     }
 
     public createOrder(event: Events.EventEmitter): HTMLElement {
+        // this.view.adressInputElement.value = '134532, ствыл, ул. счы'
         const flag: {b: boolean; i: boolean;} = {b: false, i: false};
         this.view.chooseButtonsElement.forEach((button) => {
             button.addEventListener('click', () => {
@@ -36,15 +54,12 @@ export class OrderController {
         })
 
         this.view.adressInputElement.addEventListener('input', () => {
-            if (this.view.validateInput(this.view.adressInputElement.value, 'address')) {flag.i=true;}
+            if (this.view.validateInput(this.view.adressInputElement.value, 'address')) {
+                flag.i=true;
+                this.model.address = this.view.adressInputElement.value
+            }
             else {flag.i = false}
             this.view.toggleButton((flag.b && flag.i), this.view.nextButtonElement)
-        })
-
-        this.view.nextButtonElement.addEventListener('click', () => {
-            this.model.address = this.view.adressInputElement.value
-            event.emit('disActivationModal');
-            event.emit('activationModal', this.createContacts(event))
         })
 
         return this.view.orderTemplateElement
@@ -52,23 +67,21 @@ export class OrderController {
     
     public createContacts(event: Events.EventEmitter): HTMLElement {
         const flag: {[key: number]: boolean} = {0: false, 1: false};
+        // this.view.emailInputElement.value = 'ncdk@nckds.cnk';
         [this.view.emailInputElement, this.view.phoneInputElement].forEach((contact: HTMLFormElement, index: number) => {
             contact.addEventListener('input', () => {
-                if (this.view.validateInput(contact.value, contact.name)) {flag[index] = true}
+                if (this.view.validateInput(contact.value, contact.name)) {
+                    flag[index] = true
+                    if (index === 0) {
+                        this.model.email = this.view.emailInputElement.value
+                    }
+                    else {
+                        this.model.phone = this.view.phoneInputElement.value
+                    }
+                }
                 else {flag[index] = false}
                 this.view.toggleButton((flag[0]&&flag[1]), this.view.payButtonElement)
             })
-        })
-
-        this.view.payButtonElement.addEventListener('click', (e) => {
-            e.preventDefault()
-            this.model.email = this.view.emailInputElement.value
-            this.model.phone = this.view.phoneInputElement.value
-
-            event.emit('ApiPOST', this.model.flattenObject(this.model.getData()))
-            event.emit('disActivationModal');
-            event.emit('activationSuccess', {total: this.model.getData().total});
-            event.emit('disActivationSuccess')
         })
 
         return this.view.contactsTemplateElement

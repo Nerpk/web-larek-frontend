@@ -19,21 +19,27 @@ export class BasketController {
             this.view.getMainBasketCounter().textContent = `${this.model.getCounter()}`;
         })
         event.on('changeData', () => {
-            this.view.getBasketProducts().querySelectorAll('.basket__item-index').forEach((item, index) => item.textContent = `${index+1}`);
-            this.view.getBasketTotal().textContent = `${this.model.getTotalPrice()} синапсов`
-            this.createBasket(event);
-        })
-        event.on('getBasket', () => {
-            return this.model.getData()
+            this.changeBasket(event)
         })
         event.on('disActivationSuccess', () => {
             this.model = new BasketModel;
             this.view = new BasketView;
             this.view.getMainBasketCounter().textContent = '0';
+            this.view.getMainBasketButton().addEventListener('click', () => {
+                event.emit('activationModal', this.createBasket(event))
+            })
+            this.view.getBasketButton().addEventListener('click', () => {
+                event.emit('disActivationModal')
+                event.emit('createOrder', this.model.getData())
+            })
         })
 
         this.view.getMainBasketButton().addEventListener('click', () => {
             event.emit('activationModal', this.createBasket(event))
+        })
+        this.view.getBasketButton().addEventListener('click', () => {
+            event.emit('disActivationModal')
+            event.emit('createOrder', this.model.getData())
         })
     }
 
@@ -62,10 +68,6 @@ export class BasketController {
         }
         else {
             this.view.getBasketButton().disabled = false
-            this.view.getBasketButton().addEventListener('click', () => {
-                event.emit('disActivationModal')
-                event.emit('createOrder', this.model.getData())
-            })
         }
         return this.view.getBasketTemplate();
     }

@@ -11,6 +11,9 @@ export class HelpApi {
         event.on('ApiPOST', (e) => {
             this.api.post('/order', e).then(v => {
                 console.log(v);
+                event.emit('disActivationModal');
+                event.emit('activationSuccess', {total: (v as {total: number}).total});
+                event.emit('disActivationSuccess')
             }).catch(err => {
                 console.error('Произошла ошибка при выполнении запроса:', err);
             });
