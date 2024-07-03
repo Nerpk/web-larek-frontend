@@ -59,6 +59,16 @@ export class OrderView implements IOrderView {
             button.disabled = true
         }
     }
+    public updateOrderView() {
+        this.adressInput.value = '';
+        this.emailInput.value = '';
+        this.phoneInput.value = '';
+        this.chooseButtons.forEach(button => {
+            button.style.outline = 'none';
+        })
+        this.nextButton.disabled = true;
+        this.payButton.disabled = true;
+    }
     public validateInput(input: string, flag: string): boolean {
         const regexes: Record<string, RegExp> = {
           'address': /^\d{6},\s[а-яА-ЯёЁ]+,\sул\.\s[а-яА-ЯёЁ]+.*$/,

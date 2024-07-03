@@ -22,16 +22,8 @@ export class BasketController {
             this.changeBasket(event)
         })
         event.on('updateBasket', () => {
-            this.model = new BasketModel;
-            this.view = new BasketView;
-            this.view.getMainBasketCounter().textContent = '0';
-            this.view.getMainBasketButton().addEventListener('click', () => {
-                event.emit('activationModal', this.createBasket(event))
-            })
-            this.view.getBasketButton().addEventListener('click', () => {
-                event.emit('disActivationModal')
-                event.emit('createOrder', this.model.getData())
-            })
+            this.model.updateBasketModel();
+            this.view.updateBasketView();
         })
 
         this.view.getMainBasketButton().addEventListener('click', () => {

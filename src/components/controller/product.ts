@@ -12,7 +12,6 @@ export class ProductController {
       this.model = new ProductModel(data);
 
       event.on('updateProducts', () => {
-        this.model = new ProductModel(data);
         this.model.setBasketStatus('out');
     })
     }

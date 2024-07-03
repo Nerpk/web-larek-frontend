@@ -42,4 +42,9 @@ export class BasketModel implements IBasketModel{
     public getData(): object {
         return {total: this.total, products: this.getProductsID()}
     }
+    public updateBasketModel() {
+        this.counter = 0;
+        this.total = 0;
+        this.products = [];
+    }
 }

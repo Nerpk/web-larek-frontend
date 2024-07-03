@@ -48,6 +48,10 @@ export class OrderModel implements IOrderModel {
     public getData(): IOrderData{
         return this.orderData
     }
+    public updateOrderModel() {
+        this.orderData = {} as IOrderData;
+        this.orderData.user = {} as IUserData;
+    }
     public flattenObject(obj: any): Record<string, any> {
         return Object.keys(obj).reduce((acc: Record<string, any>, k: string) => {
           if (typeof obj[k] === 'object' && obj[k] !== null && !Array.isArray(obj[k])) {

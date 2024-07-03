@@ -124,6 +124,8 @@ class BasketView implements IBasketView{
     public getBasketProducts(): HTMLUListElement 
     public getBasketTotal(): HTMLElement 
     public getBasketButton(): HTMLButtonElement       // возвращают соответственно поле написанное после get
+
+    public updateBasketView() //обновляет отображение корзины
 }
 
 // Отображение модального окна
@@ -163,6 +165,7 @@ class OrderView implements IOrderView {
     get nextButtonElement(): HTMLButtonElement 
     get payButtonElement(): HTMLButtonElement            // возвращают соответствующие поля
 
+    public updateOrderView() //обновляет отображение заказа
     public toggleButton(condition: boolean, button: HTMLButtonElement) //переключение состояния кнопки по условию
     public validateInput(input: string, flag: string): boolean //валидация выбранного поля ввода по флагу 
 }
@@ -211,6 +214,7 @@ class BasketModel implements IBasketModel{
     public getProducts(): IProductData[] 
     public getCounter(): number                // возвращают соответствующие поля
 
+    public updateBasketModel() // обновление модели корзины
     public getProductsID(): string[] //возвращает массив id товаров в корзине
     public getData(): object //возвращает данные в виде удобном для сервера 
 }
@@ -232,6 +236,7 @@ class OrderModel implements IOrderModel {
     get total(): number 
     set total(value: number)      // установка|возврат соответствующих полей
 
+    public updateOrderModel() // обновляет модель заказа
     public getData(): IOrderData //возвращает все данные заказа целиком
     public flattenObject(obj: any): Record<string, any>  //из объекта любой вложенности создаёт линейный объект
 }

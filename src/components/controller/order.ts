@@ -16,16 +16,8 @@ export class OrderController {
             event.emit('activationModal', this.createOrder(event))
         })
         event.on('updateOrder', () => {
-            this.model = new OrderModel;
-            this.view = new OrderView;
-            this.view.nextButtonElement.addEventListener('click', () => {
-                event.emit('disActivationModal');
-                event.emit('activationModal', this.createContacts(event))
-            })
-            this.view.payButtonElement.addEventListener('click', (e) => {
-                e.preventDefault()
-                event.emit('ApiPOST', this.model.flattenObject(this.model.getData()))
-            })
+            this.model.updateOrderModel();
+            this.view.updateOrderView();
         })
 
         this.view.nextButtonElement.addEventListener('click', () => {

@@ -44,4 +44,10 @@ export class BasketView implements IBasketView{
     public getBasketButton(): HTMLButtonElement {
         return this.basketButton;
     }
+
+    public updateBasketView() {
+        this.mainBasketCounter.textContent = '0';
+        this.basketTotal.textContent = '0';
+        this.basketButton.disabled = true;
+    }
 }
