@@ -9,9 +9,13 @@ const modal = new ModalController(eventBus)
 const basket = new BasketController(eventBus)
 const order = new OrderController(eventBus)
 
-api.get(`/product/`).then(data => {
+api.get(`/product/`)
+.then(data => {
     eventBus.emit('createGallery', {where: '.gallery', items: (data as Types.IProductList).items})
 })
+.catch(error => {
+    console.error('Произошла ошибка при получении данных о продуктах:', error);
+});
 
 eventBus.on('createGallery', (e) => {
     const gallery = document.querySelector((e as {where: string, items: Types.IProductData[]}).where);
@@ -29,4 +33,10 @@ eventBus.on('createBasket', (e) => {
         const product = new ProductController(item, eventBus)
         gallery.append(product.createShort(eventBus))
     })
+})
+
+eventBus.on('disActivationSuccess', () => {
+    eventBus.emit('updateProducts');
+    eventBus.emit('updateBasket');
+    eventBus.emit('updateOrder');
 })

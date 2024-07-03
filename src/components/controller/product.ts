@@ -11,7 +11,7 @@ export class ProductController {
     constructor(data: IProductData, event: Events.EventEmitter) {
       this.model = new ProductModel(data);
 
-      event.on('disActivationSuccess', () => {
+      event.on('updateProducts', () => {
         this.model = new ProductModel(data);
         this.model.setBasketStatus('out');
     })

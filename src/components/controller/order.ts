@@ -15,7 +15,7 @@ export class OrderController {
             this.model.getData().items = (e as {total: number, products: string[]}).products;
             event.emit('activationModal', this.createOrder(event))
         })
-        event.on('disActivationSuccess', () => {
+        event.on('updateOrder', () => {
             this.model = new OrderModel;
             this.view = new OrderView;
             this.view.nextButtonElement.addEventListener('click', () => {

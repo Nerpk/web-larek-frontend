@@ -21,7 +21,7 @@ export class BasketController {
         event.on('changeData', () => {
             this.changeBasket(event)
         })
-        event.on('disActivationSuccess', () => {
+        event.on('updateBasket', () => {
             this.model = new BasketModel;
             this.view = new BasketView;
             this.view.getMainBasketCounter().textContent = '0';
